@@ -1,499 +1,522 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Physio" />
-  <meta name="theme-color" content="#0a0a0a" />
-  <title>Physio &amp; Dehnung</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="Physio"/>
+  <meta name="theme-color" content="#F7F4EE"/>
+  <title>Physio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
+    :root {
+      --cream: #F7F4EE;
+      --cream2: #F0EDE5;
+      --sand: #E8E3D8;
+      --gold: #B8A57A;
+      --gold-light: #D4C49A;
+      --gold-dark: #8A7355;
+      --ink: #1A1815;
+      --ink3: #7A7568;
+      --line: rgba(184,165,122,0.2);
+      --line-strong: rgba(184,165,122,0.45);
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; background: #0a0a0a; color: #f1f1f1; min-height: 100vh; padding-bottom: calc(80px + env(safe-area-inset-bottom, 20px)); }
-    .header { background: #111; border-bottom: 1px solid #222; padding: 52px 16px 0 16px; position: sticky; top: 0; z-index: 100; }
-    .header-meta { font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 3px; }
-    .header-title { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
-    .header-sub { font-size: 11px; color: #555; margin-bottom: 14px; }
-    .session-tabs { display: flex; gap: 4px; }
-    .session-tab { flex: 1; padding: 9px 6px; text-align: center; font-size: 12px; font-weight: 600; border: 1px solid #222; border-bottom: none; border-radius: 8px 8px 0 0; background: transparent; color: #555; cursor: pointer; transition: all 0.15s; }
-    .session-tab.active { color: #fff; }
-    .content { max-width: 640px; margin: 0 auto; padding: 18px 14px 0; }
-    .session-header { margin-bottom: 20px; }
-    .session-time { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
-    .session-dot { width: 6px; height: 6px; border-radius: 50%; }
-    .session-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-    .session-desc { font-size: 12px; color: #666; line-height: 1.5; }
-    .session-total { font-size: 11px; color: #444; margin-top: 6px; }
-    .category { margin-bottom: 24px; }
-    .category-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #444; margin-bottom: 8px; padding-left: 2px; }
-    .ex-card { background: #141414; border: 1px solid #222; border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: all 0.15s; margin-bottom: 7px; user-select: none; }
-    .ex-card.done { background: #0f1f14; border-color: #22c55e33; opacity: 0.65; }
-    .ex-card:active { transform: scale(0.98); }
-    .checkbox { width: 22px; height: 22px; border-radius: 7px; border: 2px solid #333; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; font-size: 11px; transition: all 0.15s; }
-    .checkbox.checked { background: #22c55e; border-color: #22c55e; color: #fff; }
-    .ex-body { flex: 1; min-width: 0; }
-    .ex-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
-    .ex-name { font-size: 14px; font-weight: 600; }
-    .ex-name.done { text-decoration: line-through; color: #555; }
-    .ex-tag { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; border-radius: 4px; padding: 2px 6px; border: 1px solid; flex-shrink: 0; }
-    .ex-dose { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
-    .ex-note { font-size: 11px; color: #555; line-height: 1.5; }
-    .ex-actions { display: flex; gap: 8px; margin-top: 9px; flex-wrap: wrap; }
-    .timer-btn { display: inline-flex; align-items: center; gap: 5px; background: #1e1e1e; border: 1px solid #333; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: #f1f1f1; cursor: pointer; transition: all 0.15s; }
-    .timer-btn.running { background: #1a2e1a; border-color: #22c55e44; color: #22c55e; }
-    .how-btn { display: inline-flex; align-items: center; gap: 5px; background: #1a1a2e; border: 1px solid #3333aa44; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: #818cf8; cursor: pointer; transition: all 0.15s; }
-    .how-btn:active { transform: scale(0.95); }
-    .progress-wrap { margin-bottom: 20px; }
-    .progress-bar-bg { background: #1a1a1a; border-radius: 4px; height: 4px; margin-bottom: 6px; }
-    .progress-bar-fill { height: 4px; border-radius: 4px; transition: width 0.4s ease; }
-    .progress-text { font-size: 11px; color: #444; }
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #111; border-top: 1px solid #222; padding: 10px 20px calc(10px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: space-around; z-index: 200; }
-    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: #444; cursor: pointer; font-size: 10px; padding: 4px 12px; transition: color 0.15s; }
-    .nav-btn.active { color: #f1f1f1; }
-    .nav-icon { font-size: 20px; }
-    .info-page { padding: 20px 14px; max-width: 640px; margin: 0 auto; }
-    .info-card { background: #141414; border: 1px solid #222; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-    .info-card-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    .info-card-body { font-size: 12px; color: #777; line-height: 1.7; }
-    .info-card-body b { color: #aaa; }
-    .streak-card { background: #141414; border: 1px solid #222; border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; }
-    .streak-num { font-size: 42px; font-weight: 800; line-height: 1; }
-    .week-dots { display: flex; gap: 6px; margin-top: 12px; }
-    .week-dot-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .week-dot-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #222; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #444; }
-    .week-dot-circle.complete { background: #22c55e; border-color: #22c55e; color: #fff; }
-    .week-dot-circle.today { border-color: #888; color: #888; }
-    .week-dot-label { font-size: 9px; color: #333; }
-    .hidden { display: none; }
+    html, body { background: var(--cream); }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--cream);
+      border-bottom: 1px solid var(--line-strong);
+      padding: calc(50px + env(safe-area-inset-top, 0px)) 24px 0;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .eyebrow { font-size: 9px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+    .htitle { font-family: 'Cormorant Garamond', serif; font-size: 27px; font-weight: 300; color: var(--ink); margin-bottom: 2px; }
+    .hsub { font-size: 11px; color: var(--ink3); margin-bottom: 12px; }
+
+    .prog-row { display: flex; align-items: center; gap: 12px; margin-bottom: 0; padding-bottom: 14px; }
+    .prog-track { flex: 1; height: 1px; background: var(--sand); position: relative; }
+    .prog-fill { position: absolute; left: 0; top: 0; height: 1px; background: var(--gold); transition: width 0.5s ease; }
+    .prog-label { font-size: 11px; color: var(--ink3); white-space: nowrap; }
+
+    .tabs { display: flex; }
+    .tab {
+      flex: 1; padding: 11px 6px; text-align: center;
+      font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink3); background: none; border: none; cursor: pointer;
+      border-bottom: 1.5px solid transparent; margin-bottom: -1px; transition: all 0.2s;
+    }
+    .tab.active { color: var(--gold-dark); border-bottom-color: var(--gold); }
+
+    .page { display: none; }
+    .page.active { display: block; }
+    .content { max-width: 520px; margin: 0 auto; padding: 26px 22px 0; }
+
+    /* SESSION INTRO */
+    .session-intro { margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--line-strong); }
+    .session-time { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+    .session-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--ink); margin-bottom: 5px; }
+    .session-desc { font-size: 11px; color: var(--ink3); line-height: 1.6; }
+    .session-total { font-size: 11px; color: var(--ink3); margin-top: 6px; }
+
+    /* CATEGORY */
+    .cat-label {
+      font-size: 8px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--gold); margin: 20px 0 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .cat-label::after { content: ''; flex: 1; height: 1px; background: var(--line-strong); }
+
+    /* EXERCISE ROW */
+    .ex {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 13px 0; border-bottom: 1px solid var(--line);
+      cursor: pointer; -webkit-user-select: none; user-select: none;
+      transition: opacity 0.12s;
+    }
+    .ex:last-child { border-bottom: none; }
+    .ex:active { opacity: 0.6; }
+    .ring {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+      border: 1px solid var(--gold-light);
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .ex.done .ring { background: var(--gold); border-color: var(--gold); }
+    .tick {
+      width: 7px; height: 4px;
+      border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff;
+      transform: rotate(-45deg) translateY(-1px); opacity: 0; transition: opacity 0.15s;
+    }
+    .ex.done .tick { opacity: 1; }
+    .exbody { flex: 1; min-width: 0; }
+    .exname {
+      font-size: 13px; font-weight: 400; color: var(--ink); line-height: 1.4; margin-bottom: 3px;
+      transition: color 0.2s;
+    }
+    .ex.done .exname { color: var(--ink3); text-decoration: line-through; text-decoration-color: var(--gold-light); }
+    .exdose { font-size: 11px; color: var(--gold-dark); font-weight: 500; margin-bottom: 3px; }
+    .exnote { font-size: 11px; color: var(--ink3); font-style: italic; line-height: 1.5; }
+    .exactions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+
+    /* TIMER BTN */
+    .timer-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: 1px solid var(--line-strong); border-radius: 999px;
+      padding: 4px 12px; font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
+      color: var(--ink3); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+    }
+    .timer-btn.running { border-color: var(--gold); color: var(--gold-dark); background: var(--cream2); }
+    .timer-btn:active { transform: scale(0.96); }
+
+    /* HOW BTN */
+    .how-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: 1px solid var(--line-strong); border-radius: 999px;
+      padding: 4px 12px; font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
+      color: var(--gold-dark); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+    }
+    .how-btn:active { transform: scale(0.96); background: var(--cream2); }
+
+    /* TAGS */
+    .extag {
+      display: inline-block; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 999px; font-weight: 500; margin-top: 6px;
+    }
+
+    /* INFO PAGE */
+    .info-content { max-width: 520px; margin: 0 auto; padding: 26px 22px 0; }
+    .info-card { background: var(--cream2); border: 1px solid var(--line-strong); border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+    .info-card-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: var(--ink); margin-bottom: 10px; }
+    .info-card-body { font-size: 12px; color: var(--ink3); line-height: 1.8; }
+    .info-card-body b { color: var(--ink); font-weight: 500; }
+
+    .streak-hero { text-align: center; padding: 28px 0 22px; border-bottom: 1px solid var(--line-strong); margin-bottom: 22px; }
+    .streak-big { font-family: 'Cormorant Garamond', serif; font-size: 80px; font-weight: 300; line-height: 1; color: var(--ink); }
+    .streak-sub { font-size: 9px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-top: 6px; }
+    .week-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; margin-bottom: 24px; }
+    .wc { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .wd { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line-strong); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--ink3); transition: all 0.2s; }
+    .wd.done { background: var(--gold); border-color: var(--gold); color: #fff; }
+    .wd.today { border-color: var(--gold); color: var(--gold-dark); font-weight: 500; }
+    .wl { font-size: 9px; color: var(--ink3); }
 
     /* MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 500; display: flex; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(26,24,21,0.6);
+      z-index: 500; display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; transition: opacity 0.2s; pointer-events: none;
+    }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal { background: #161616; border: 1px solid #2a2a2a; border-radius: 20px 20px 0 0; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)); transform: translateY(100%); transition: transform 0.3s cubic-bezier(.32,.72,0,1); }
+    .modal {
+      background: var(--cream); border-top: 1px solid var(--line-strong);
+      border-radius: 20px 20px 0 0; width: 100%; max-width: 520px;
+      max-height: 88vh; overflow-y: auto;
+      padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(.32,.72,0,1);
+    }
     .modal-overlay.open .modal { transform: translateY(0); }
-    .modal-handle { width: 36px; height: 4px; background: #333; border-radius: 2px; margin: 12px auto 0; }
-    .modal-header { padding: 16px 20px 12px; border-bottom: 1px solid #222; position: relative; }
-    .modal-close { position: absolute; top: 12px; right: 16px; background: #222; border: none; border-radius: 50%; width: 30px; height: 30px; color: #888; font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .modal-tag { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-    .modal-title { font-size: 17px; font-weight: 700; padding-right: 36px; }
-    .modal-dose { font-size: 12px; color: #666; margin-top: 3px; }
-    .modal-body { padding: 16px 20px; }
-    .modal-illustration { background: #1a1a1a; border: 1px solid #222; border-radius: 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; min-height: 160px; padding: 16px; }
-    .modal-illustration svg { width: 100%; max-width: 260px; height: auto; }
-    .steps-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #444; margin-bottom: 10px; }
+    .modal-handle { width: 32px; height: 3px; background: var(--sand); border-radius: 2px; margin: 14px auto 0; }
+    .modal-header { padding: 16px 22px 14px; border-bottom: 1px solid var(--line); position: relative; }
+    .modal-close { position: absolute; top: 14px; right: 18px; background: var(--sand); border: none; border-radius: 50%; width: 28px; height: 28px; color: var(--ink3); font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .modal-tag { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--ink); padding-right: 36px; }
+    .modal-dose { font-size: 11px; color: var(--ink3); margin-top: 3px; }
+    .modal-body { padding: 18px 22px; }
+
+    .modal-illus { background: var(--cream2); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 18px; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 150px; }
+    .modal-illus svg { width: 100%; max-width: 240px; height: auto; }
+
+    .steps-eyebrow { font-size: 8px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
     .step { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
-    .step-num { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; margin-top: 1px; }
-    .step-text { font-size: 13px; color: #ccc; line-height: 1.5; }
-    .step-text b { color: #f1f1f1; }
-    .tip-box { background: #1a1a10; border: 1px solid #33331a; border-radius: 10px; padding: 12px; margin: 16px 0; }
-    .tip-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #a16207; margin-bottom: 5px; }
-    .tip-text { font-size: 12px; color: #888; line-height: 1.5; }
-    .yt-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; border-radius: 12px; background: #1a0808; border: 1px solid #ff000033; color: #ff5555; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; margin-top: 4px; transition: all 0.15s; }
-    .yt-btn:active { transform: scale(0.97); }
+    .step-num { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; background: var(--sand); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: var(--gold-dark); margin-top: 1px; }
+    .step-text { font-size: 13px; color: var(--ink); line-height: 1.55; }
+    .step-text b { font-weight: 500; }
+
+    .tip-box { background: var(--cream2); border-left: 2px solid var(--gold); border-radius: 0 8px 8px 0; padding: 12px 14px; margin: 16px 0; }
+    .tip-eyebrow { font-size: 8px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 5px; }
+    .tip-text { font-size: 12px; color: var(--ink3); line-height: 1.6; }
+
+    .yt-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 13px; border-radius: 10px;
+      background: var(--cream2); border: 1px solid var(--line-strong);
+      color: var(--ink3); font-size: 13px; font-weight: 400;
+      cursor: pointer; text-decoration: none; transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .yt-btn:active { background: var(--sand); }
+
+    /* BOTTOM NAV */
+    .bnav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--cream); border-top: 1px solid var(--line-strong);
+      padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
+      display: flex; justify-content: space-around; z-index: 200;
+    }
+    .nbtn {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      background: none; border: none; cursor: pointer;
+      font-size: 8px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink3); padding: 4px 20px; transition: color 0.15s;
+    }
+    .nbtn.active { color: var(--gold-dark); }
+    .nicon { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; line-height: 1; margin-bottom: 1px; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
 
-<div class="header" id="header">
-  <div class="header-meta">Physio · Daily Routine</div>
-  <div class="header-title">Dehnung &amp; Physio</div>
-  <div class="header-sub">Knie · Schienbein · Golfer-Ellenbogen</div>
-  <div class="session-tabs" id="sessionTabs"></div>
-</div>
-
-<div id="mainPage">
-  <div class="content">
-    <div class="session-header">
-      <div class="session-time" id="sessionTime"></div>
-      <div class="session-title" id="sessionTitle"></div>
-      <div class="session-desc" id="sessionDesc"></div>
-      <div class="session-total" id="sessionTotal"></div>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
-      <div class="progress-text" id="progressText"></div>
-    </div>
-    <div id="exerciseContainer"></div>
+<div class="header" id="mainHeader">
+  <div class="eyebrow">Physio · Daily Routine</div>
+  <div class="htitle">Dehnung &amp; Physio</div>
+  <div class="hsub">Knie · Schienbein · Golfer-Ellenbogen</div>
+  <div class="prog-row">
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="prog-label" id="progLabel">0 / 9</div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="go('morning')">Morgens</button>
+    <button class="tab" onclick="go('evening')">Abends</button>
+    <button class="tab" onclick="go('info')">Info</button>
   </div>
 </div>
 
-<div id="infoPage" class="hidden">
-  <div class="info-page">
-    <div class="streak-card">
-      <div><div class="streak-num" id="streakNum">0</div><div style="font-size:12px;color:#666;margin-top:2px;">Tage in Folge</div></div>
-      <div style="flex:1"><div style="font-size:12px;color:#888;margin-bottom:8px;">Diese Woche</div><div class="week-dots" id="weekDots"></div></div>
+<!-- MORNING PAGE -->
+<div class="page active" id="page-morning">
+  <div class="content" id="content-morning"></div>
+</div>
+
+<!-- EVENING PAGE -->
+<div class="page" id="page-evening">
+  <div class="content" id="content-evening"></div>
+</div>
+
+<!-- INFO PAGE -->
+<div class="page" id="page-info">
+  <div class="info-content">
+    <div class="streak-hero">
+      <div class="streak-big" id="streakNum">0</div>
+      <div class="streak-sub">Tage in Folge</div>
     </div>
-    <div class="info-card"><div class="info-card-title">Knieschmerzen</div><div class="info-card-body"><b>Morgens:</b> VMO-Aktivierung + Quad-Stretch bereiten das Knie vor.<br><b>Abends:</b> Couch Stretch + Foam Roll loesen Spannung.<br><br>Vermeide: tiefe Kniebeugen mit Schmerzen, Laufen bergab.</div></div>
-    <div class="info-card"><div class="info-card-title">Schienbeinkantensyndrom</div><div class="info-card-body"><b>Ursache:</b> Ueberlastung des Tibialis anterior durch zu viel Impact.<br><b>Morgens:</b> Tibialis Raises + Waden-Exzentrik bauen Schutzmuskulatur auf.<br><br>Vermeide: Barfusslaufen auf Beton, flache Schuhe ohne Daempfung.</div></div>
-    <div class="info-card"><div class="info-card-title">Golfer-Ellenbogen</div><div class="info-card-body"><b>Ursache:</b> Ueberlastung der Flexoren-Sehne am medialen Epicondylus.<br><b>Morgens:</b> Exzentrisches Handgelenk-Curl aktiviert die Sehne kontrolliert.<br><br>Vermeide: SZ-Curls mit zu viel Gewicht, kalte Muskeln belasten.</div></div>
-    <div class="info-card"><div class="info-card-title">Warum Morgens + Abends?</div><div class="info-card-body"><b>Morgens</b> aktiviert und bereitet Gelenke vor.<br><b>Abends</b> regeneriert und baut Sehnen um – die Heilung passiert im Schlaf.<br><br>2x taeglich ist bei chronischen Beschwerden doppelt so effektiv.</div></div>
+    <div class="week-row" id="weekRow"></div>
+    <div class="info-card">
+      <div class="info-card-title">Knieschmerzen</div>
+      <div class="info-card-body"><b>Morgens:</b> VMO-Aktivierung + Quad-Stretch bereiten das Knie vor.<br><b>Abends:</b> Couch Stretch + Foam Roll lösen akkumulierte Spannung.<br><br>Vermeide tiefe Kniebeugen mit Schmerzen und Laufen bergab.</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Schienbeinkantensyndrom</div>
+      <div class="info-card-body"><b>Ursache:</b> Überlastung des Tibialis anterior durch zu viel Impact.<br><b>Morgens:</b> Tibialis Raises + Waden-Exzentrik bauen Schutzmuskulatur auf.<br><br>Vermeide Barfußlaufen auf Beton und flache Schuhe ohne Dämpfung.</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Golfer-Ellenbogen</div>
+      <div class="info-card-body"><b>Ursache:</b> Überlastung der Flexoren-Sehne am medialen Epicondylus.<br><b>Morgens:</b> Exzentrischer Handgelenk-Curl aktiviert die Sehne kontrolliert.<br><br>Vermeide SZ-Curls mit zu viel Gewicht und kalte Muskeln belasten.</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Warum Morgens + Abends?</div>
+      <div class="info-card-body"><b>Morgens</b> aktiviert und bereitet Gelenke auf Belastung vor.<br><b>Abends</b> regeneriert und baut Sehnen um – die Heilung passiert im Schlaf.<br><br>Zweimal täglich ist bei chronischen Beschwerden doppelt so effektiv.</div>
+    </div>
   </div>
 </div>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
-  <div class="modal" id="modal">
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOut(event)">
+  <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-header">
-      <button class="modal-close" onclick="closeModal()">x</button>
-      <div class="modal-tag" id="modalTag"></div>
-      <div class="modal-title" id="modalTitle"></div>
-      <div class="modal-dose" id="modalDose"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-tag" id="mTag"></div>
+      <div class="modal-title" id="mTitle"></div>
+      <div class="modal-dose" id="mDose"></div>
     </div>
     <div class="modal-body">
-      <div class="modal-illustration" id="modalIllustration"></div>
-      <div class="steps-title">AUSFUEHRUNG – SCHRITT FUER SCHRITT</div>
-      <div id="modalSteps"></div>
+      <div class="modal-illus" id="mIllus"></div>
+      <div class="steps-eyebrow">Ausführung</div>
+      <div id="mSteps"></div>
       <div class="tip-box">
-        <div class="tip-label">WICHTIG</div>
-        <div class="tip-text" id="modalTip"></div>
+        <div class="tip-eyebrow">Wichtig</div>
+        <div class="tip-text" id="mTip"></div>
       </div>
-      <a class="yt-btn" id="modalYT" target="_blank" rel="noopener noreferrer">
-        <span style="font-size:18px">&#9654;</span> YouTube-Video ansehen
-      </a>
+      <a class="yt-btn" id="mYT" target="_blank" rel="noopener">▶ YouTube-Video ansehen</a>
     </div>
   </div>
 </div>
 
-<div class="bottom-nav">
-  <button class="nav-btn active" id="navMain" onclick="showPage('main')"><span class="nav-icon">&#127939;</span>Routine</button>
-  <button class="nav-btn" id="navInfo" onclick="showPage('info')"><span class="nav-icon">&#128214;</span>Info</button>
+<div class="bnav">
+  <button class="nbtn active" id="nb-morning" onclick="go('morning')"><span class="nicon">◎</span>Morgens</button>
+  <button class="nbtn" id="nb-evening" onclick="go('evening')"><span class="nicon">◑</span>Abends</button>
+  <button class="nbtn" id="nb-info" onclick="go('info')"><span class="nicon">◇</span>Info</button>
 </div>
 
 <script>
-const DETAILS = {
-  "VMO-Aktivierung": {
-    steps: ["<b>Sitze</b> auf dem Boden oder auf der Bank, Bein gestreckt vor dir.","<b>Spanne</b> den Oberschenkel an und hebe die Ferse leicht ab – nur 0–30 Grad Beugung.","<b>Druecke</b> die Knieinnenseite aktiv, 2 Sek halten.","<b>Senke</b> langsam ab. Kein Schwung, kein Ruck."],
-    tip: "Fuehl den Muskel direkt ueber der Kniescheibe innen. Wenn du ihn nicht spuerst, lege die Hand dort hin.",
-    svg: "knee", yt: "VMO activation exercise physiotherapy"
-  },
-  "Terminal Knee Extension (Band)": {
-    steps: ["<b>Befestige</b> das Widerstandsband auf Kniehoehe an einem festen Punkt.","<b>Tritt</b> einen Schritt zurueck, Band liegt hinter dem Knie.","<b>Beuge</b> das Knie leicht (ca. 30 Grad), dann <b>strecke</b> komplett durch.","<b>Halte</b> 2 Sekunden, senke kontrolliert ab."],
-    tip: "Das Band zieht das Knie nach hinten – du arbeitest gegen diesen Zug. Kein Hohlkreuz.",
-    svg: "knee", yt: "terminal knee extension resistance band exercise"
-  },
-  "Quad-Stretch stehend": {
-    steps: ["<b>Steh</b> auf einem Bein, halte dich leicht an der Wand fest.","<b>Greife</b> den Fuss des anderen Beins, Ferse Richtung Gesaess ziehen.","<b>Knie</b> zeigen parallel nach unten – nicht nach aussen oeffnen.","<b>Schiebe</b> die Huefte leicht nach vorne fuer mehr Intensitaet."],
-    tip: "45 Sekunden pro Seite. Wenn Gleichgewicht schwierig: Stuhl als Stuetze nutzen.",
-    svg: "quad", yt: "quadriceps stretch standing technique"
-  },
-  "Tibialis Raises": {
-    steps: ["<b>Lehne</b> mit dem Ruecken an die Wand, Fersen ca. 30cm vom Boden weg.","<b>Hebe</b> beide Fussspitzen so hoch wie moeglich Richtung Schienbein.","<b>Halte</b> oben kurz, dann <b>senke</b> langsam ab – 2 bis 3 Sek abwaerts.","Volle Bewegung, Fuesse nicht einfach fallen lassen."],
-    tip: "Du solltest das Brennen direkt an der Schienbeinkante vorne spueren. Das ist der Tibialis anterior.",
-    svg: "shin", yt: "tibialis anterior raises shin splints rehab"
-  },
-  "Waden-Exzentrik einbeinig": {
-    steps: ["<b>Stelle</b> die Zehenspitzen auf eine Treppenstufe (Ferse haengt frei).","<b>Hebe</b> dich beidbeinig auf die Zehenspitzen.","<b>Hebe</b> das gesunde Bein ab – nur noch ein Bein traegt.","<b>Senke</b> die Ferse LANGSAM in 4 Sekunden ab, tief unter Stufenniveau."],
-    tip: "Nur die Absenkphase (exzentrisch) ist entscheidend. Die Aufwaertsphase darf beidbeinig sein.",
-    svg: "calf", yt: "eccentric calf raise shin splints Achilles"
-  },
-  "Fuss-Alphabet": {
-    steps: ["<b>Setze</b> dich hin, Fuss locker in der Luft.","<b>Stelle dir vor</b>, deine grosse Zehe ist ein Stift.","<b>Schreibe</b> das komplette Alphabet A bis Z mit dem Fuss in die Luft.","Bewege nur den Fuss, nicht das ganze Bein."],
-    tip: "Klingt simpel – aktiviert aber alle kleinen Stabilisatoren im Sprunggelenk.",
-    svg: "ankle", yt: "ankle alphabet exercise mobility"
-  },
-  "Exzentrischer Handgelenk-Curl": {
-    steps: ["<b>Sitze</b>, Unterarm auf dem Oberschenkel oder einer Bank.","<b>Nimm</b> eine leichte Kurzhantel (1–2 kg) mit Handflaeche nach oben.","<b>Hebe</b> das Handgelenk beihaendig nach oben.","<b>Loese</b> die andere Hand – senke einhaendig LANGSAM in 4 Sek ab."],
-    tip: "Niemals in starken Schmerz hineintrainieren. Leichtes Ziehen = OK. Stechend = Stopp.",
-    svg: "elbow", yt: "eccentric wrist curl golfers elbow rehab"
-  },
-  "Unterarm-Beuger-Stretch": {
-    steps: ["<b>Strecke</b> den Arm komplett aus, Handflaeche zeigt nach oben.","<b>Greife</b> mit der anderen Hand die Finger der ausgestreckten Hand.","<b>Ziehe</b> die Finger sanft nach unten – Dehnung am Unterarm unten.","<b>Halte</b> 30 Sekunden. Nicht rucken."],
-    tip: "Die Dehnung sollte am medialen Epicondylus (Innenknochel Ellenbogen) spuerbar sein.",
-    svg: "elbow", yt: "forearm flexor stretch golfers elbow"
-  },
-  "Band Supination/Pronation": {
-    steps: ["<b>Halte</b> ein Widerstandsband mit einer Hand, Ellenbogen 90 Grad gebeugt.","<b>Drehe</b> den Unterarm langsam nach aussen (Supination = Handflaeche oben).","<b>Drehe</b> zurueck nach innen (Pronation = Handflaeche unten) gegen den Widerstand.","Ellenbogen bleibt waehrend der ganzen Bewegung am Koerper."],
-    tip: "Langsam und kontrolliert. Kein Schwung. Widerstand anpassen: nur leichtes Brennen.",
-    svg: "elbow", yt: "forearm supination pronation resistance band"
-  },
-  "Liegender Quad-Stretch (Couch Stretch)": {
-    steps: ["<b>Knie</b> direkt an die Wand, Unterschenkel liegt an der Wand hoch.","<b>Anderes Bein</b> nach vorne auf den Boden stellen (Ausfallschritt-Position).","<b>Aufrecht</b> bleiben oder leicht zuruecklehnen – Huefte nach vorne druecken.","<b>Atme</b> tief und entspanne dich in die Dehnung. 60 Sek."],
-    tip: "Die intensivste Quad-Dehnung die es gibt. Schmerz in der Huefte = korrekt. Knieschmerz = Position korrigieren.",
-    svg: "quad", yt: "couch stretch quad hip flexor mobility"
-  },
-  "Pigeon Pose (Huefte + IT-Band)": {
-    steps: ["<b>Aus dem Vierfuesslerstand</b>: ein Knie nach vorne bringen, Unterschenkel quer ablegen.","<b>Das andere Bein</b> nach hinten strecken, Huefte sinkt zum Boden.","<b>Komme</b> auf die Unterarme oder leg den Oberkoerper ganz ab.","<b>Bleibe</b> 60 Sek. Tief atmen, Huefte aktiv entspannen."],
-    tip: "Entlastet Knie durch Hueftoffnung. Je tiefer du gehst, desto mehr IT-Band-Spannung wird geloest.",
-    svg: "hip", yt: "pigeon pose IT band knee pain stretch"
-  },
-  "Foam Roll Oberschenkel": {
-    steps: ["<b>Lege</b> die Rolle unter den Oberschenkel, stuetze dich auf die Unterarme.","<b>Rolle</b> langsam von Knie bis Huefte und zurueck.","<b>Bei Schmerzpunkten</b>: Pause machen, 10 Sek ruhig drauf bleiben.","<b>Dann</b> IT-Band: Seite des Oberschenkels ausrollen."],
-    tip: "Kein schnelles Rollen – das komprimiert nur. Langsam mit Pausen auf Spannungspunkten ist 3x effektiver.",
-    svg: "quad", yt: "foam roll quad IT band technique"
-  },
-  "Waden-Stretch an der Wand": {
-    steps: ["<b>Stehe</b> vor der Wand, Haende auf Schulterhoehe dagegen.","<b>Tritt</b> ein Bein nach hinten, Ferse bleibt auf dem Boden.","<b>Beuge</b> das vordere Knie und lehne dich leicht vor – Dehnung in der hinteren Wade.","45 Sekunden halten."],
-    tip: "Ferse muss den Boden beruehren. Wenn nicht: Schritt kleiner machen.",
-    svg: "calf", yt: "calf stretch wall gastrocnemius"
-  },
-  "Soleus-Stretch (gebeugtes Knie)": {
-    steps: ["<b>Wie</b> der Waden-Stretch an der Wand – aber hinteres Knie leicht beugen.","<b>Ferse</b> bleibt am Boden, Knie zeigt gerade nach vorne.","<b>Beuge</b> leicht weiter vor – Dehnung ist tiefer, weiter unten in der Wade.","40 Sekunden halten."],
-    tip: "Der Soleus liegt unter dem Gastrocnemius und wird nur mit gebeugtem Knie richtig gedehnt.",
-    svg: "calf", yt: "soleus stretch bent knee calf"
-  },
-  "Schienbeinkante massieren": {
-    steps: ["<b>Sitze</b> bequem, Bein locker vor dir.","<b>Suche</b> mit dem Daumen den Bereich neben (nicht auf) der Schienbeinkante.","<b>Streiche</b> langsam laengs von oben nach unten am Muskelbauch entlang.","<b>Kreise</b> auf Spannungspunkten 5 bis 10 Sek."],
-    tip: "Nicht direkt auf den Knochen druecken – neben dem Knochen ist der Tibialis anterior Muskel.",
-    svg: "shin", yt: "shin splints self massage tibialis"
-  },
-  "Querfriktionsmassage Sehne": {
-    steps: ["<b>Finde</b> den medialen Epicondylus – Knochenvorsprung an der Ellenbogen-Innenseite.","<b>Taste</b> direkt darunter die Sehne (weicher Strang).","<b>Reibe</b> mit dem Daumen quer (nicht laengs!) ueber die Sehne – 1 bis 2 cm Bewegung.","60 Sek, leichter Schmerz ist normal und gewollt."],
-    tip: "Querfriktionsmassage bricht alte Sehnennarben auf und foerdert gesunden Sehnenumbau. Danach kann es 24h ziehen.",
-    svg: "elbow", yt: "golfers elbow cross friction massage medial epicondyle"
-  },
-  "Unterarm-Strecker-Stretch": {
-    steps: ["<b>Strecke</b> den Arm aus, Handflaeche zeigt nach unten.","<b>Greife</b> mit der anderen Hand die Finger von oben.","<b>Ziehe</b> die Finger sanft nach unten Richtung Boden.","30 Sek halten. Dehnung spuerst du am Unterarm oben."],
-    tip: "Ergaenzt den Beuger-Stretch von morgens. Beide Seiten des Unterarms muessen gedehnt werden.",
-    svg: "elbow", yt: "forearm extensor stretch tennis golfer elbow"
-  },
-  "Handgelenk-Kreise langsam": {
-    steps: ["<b>Strecke</b> den Arm locker nach vorne, Hand entspannt haengen lassen.","<b>Drehe</b> langsam einen grossen Kreis – voller Bewegungsumfang.","<b>10 Kreise</b> im Uhrzeigersinn, dann 10 gegen den Uhrzeigersinn.","Kein Rucken. Fliessende, gleichmaessige Bewegung."],
-    tip: "Aktive Regeneration – foerdert Gelenkschmiere (Synovialfluessigkeit) und loest Verklebungen.",
-    svg: "elbow", yt: "wrist circles mobility rehabilitation"
-  }
-};
-
-const SVGS = {
-  knee: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="100" cy="55" rx="28" ry="45" fill="#1e2e1e" stroke="#16a34a" stroke-width="1.5"/>
-    <ellipse cx="100" cy="155" rx="22" ry="40" fill="#1a2a1a" stroke="#16a34a" stroke-width="1.5"/>
-    <ellipse cx="100" cy="102" rx="18" ry="16" fill="#0f1f0f" stroke="#22c55e" stroke-width="2"/>
-    <ellipse cx="100" cy="102" rx="10" ry="9" fill="#16a34a" opacity="0.4"/>
-    <ellipse cx="85" cy="80" rx="10" ry="18" fill="#22c55e" opacity="0.3" transform="rotate(-15,85,80)"/>
-    <text x="100" y="195" text-anchor="middle" fill="#16a34a" font-size="10" font-family="system-ui">Knie</text>
-  </svg>`,
-  quad: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="100" cy="90" rx="32" ry="70" fill="#1e2e1e" stroke="#16a34a" stroke-width="1.5"/>
-    <ellipse cx="88" cy="80" rx="10" ry="30" fill="#22c55e" opacity="0.3" transform="rotate(-5,88,80)"/>
-    <ellipse cx="104" cy="75" rx="10" ry="35" fill="#22c55e" opacity="0.2"/>
-    <ellipse cx="118" cy="80" rx="8" ry="28" fill="#22c55e" opacity="0.25" transform="rotate(5,118,80)"/>
-    <ellipse cx="100" cy="155" rx="20" ry="14" fill="#0f1f0f" stroke="#22c55e" stroke-width="1.5"/>
-    <path d="M132 60 Q148 40 143 18" stroke="#22c55e" stroke-width="2" fill="none" stroke-dasharray="4"/>
-    <polygon points="143,18 138,27 148,26" fill="#22c55e"/>
-    <text x="100" y="195" text-anchor="middle" fill="#16a34a" font-size="10" font-family="system-ui">Quadrizeps</text>
-  </svg>`,
-  shin: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="100" cy="100" rx="26" ry="75" fill="#1a2028" stroke="#0891b2" stroke-width="1.5"/>
-    <line x1="100" y1="30" x2="100" y2="170" stroke="#0891b2" stroke-width="3" opacity="0.4"/>
-    <ellipse cx="113" cy="95" rx="10" ry="55" fill="#0891b2" opacity="0.3" transform="rotate(3,113,95)"/>
-    <ellipse cx="105" cy="178" rx="20" ry="10" fill="#1a2028" stroke="#0891b2" stroke-width="1.5"/>
-    <path d="M145 140 L145 65" stroke="#22c55e" stroke-width="2" fill="none"/>
-    <polygon points="145,60 140,70 150,70" fill="#22c55e"/>
-    <text x="100" y="198" text-anchor="middle" fill="#0891b2" font-size="10" font-family="system-ui">Tibialis Anterior</text>
-  </svg>`,
-  calf: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="100" cy="100" rx="28" ry="72" fill="#1a2028" stroke="#0891b2" stroke-width="1.5"/>
-    <ellipse cx="93" cy="85" rx="14" ry="35" fill="#0891b2" opacity="0.3" transform="rotate(-5,93,85)"/>
-    <ellipse cx="110" cy="85" rx="12" ry="32" fill="#0891b2" opacity="0.2" transform="rotate(5,110,85)"/>
-    <line x1="100" y1="145" x2="100" y2="168" stroke="#0891b2" stroke-width="4" opacity="0.6"/>
-    <ellipse cx="105" cy="178" rx="22" ry="10" fill="#1a2028" stroke="#0891b2" stroke-width="1.5"/>
-    <path d="M148 60 L148 130" stroke="#e63946" stroke-width="2" fill="none"/>
-    <polygon points="148,136 143,126 153,126" fill="#e63946"/>
-    <text x="155" y="98" fill="#e63946" font-size="8" font-family="system-ui">4 Sek</text>
-    <text x="100" y="198" text-anchor="middle" fill="#0891b2" font-size="10" font-family="system-ui">Wadenmuskel</text>
-  </svg>`,
-  ankle: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="90" cy="160" rx="55" ry="22" fill="#1a2028" stroke="#0891b2" stroke-width="1.5"/>
-    <ellipse cx="90" cy="118" rx="28" ry="24" fill="#0f1820" stroke="#0891b2" stroke-width="2"/>
-    <path d="M 55 105 A 42 42 0 1 1 125 105" stroke="#22c55e" stroke-width="2.5" fill="none"/>
-    <polygon points="55,105 48,97 60,95" fill="#22c55e"/>
-    <text x="90" y="65" text-anchor="middle" fill="#0891b2" font-size="22" font-family="system-ui" opacity="0.4">ABC</text>
-    <text x="90" y="195" text-anchor="middle" fill="#0891b2" font-size="10" font-family="system-ui">Sprunggelenk</text>
-  </svg>`,
-  elbow: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="78" cy="65" rx="20" ry="48" fill="#2a1e10" stroke="#d97706" stroke-width="1.5" transform="rotate(-10,78,65)"/>
-    <ellipse cx="105" cy="108" rx="22" ry="18" fill="#1a1008" stroke="#d97706" stroke-width="2"/>
-    <circle cx="91" cy="114" r="8" fill="#d97706" opacity="0.5"/>
-    <circle cx="91" cy="114" r="4" fill="#d97706"/>
-    <ellipse cx="130" cy="155" rx="18" ry="42" fill="#2a1e10" stroke="#d97706" stroke-width="1.5" transform="rotate(15,130,155)"/>
-    <ellipse cx="124" cy="150" rx="10" ry="30" fill="#d97706" opacity="0.2" transform="rotate(15,124,150)"/>
-    <text x="78" y="128" text-anchor="middle" fill="#d97706" font-size="8" font-family="system-ui">ME</text>
-    <text x="100" y="198" text-anchor="middle" fill="#d97706" font-size="10" font-family="system-ui">Ellenbogen</text>
-  </svg>`,
-  hip: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="100" cy="80" rx="55" ry="40" fill="#1e2e1e" stroke="#16a34a" stroke-width="1.5"/>
-    <circle cx="68" cy="90" r="16" fill="#0f1f0f" stroke="#22c55e" stroke-width="2"/>
-    <circle cx="132" cy="90" r="16" fill="#0f1f0f" stroke="#22c55e" stroke-width="2"/>
-    <line x1="68" y1="106" x2="62" y2="180" stroke="#22c55e" stroke-width="3" opacity="0.4"/>
-    <line x1="132" y1="106" x2="138" y2="180" stroke="#22c55e" stroke-width="3" opacity="0.4"/>
-    <path d="M68 90 Q28 135 32 175" stroke="#22c55e" stroke-width="2" fill="none" stroke-dasharray="5"/>
-    <text x="100" y="198" text-anchor="middle" fill="#16a34a" font-size="10" font-family="system-ui">Huefte + IT-Band</text>
-  </svg>`
-};
-
 const SESSIONS = [
-  { id:"morning", tab:"Morgens", title:"Morgen-Aktivierung", color:"#f59e0b",
-    time:"Morgens vor dem Fruehstueck oder Training", desc:"Aktiviert Knie, Schienbein und Ellenbogen-Sehne.", totalMin:"~18 Min",
-    categories:[
-      { label:"KNIE – AKTIVIERUNG", exercises:[
-        { name:"VMO-Aktivierung", dose:"3x15 Wdh", note:"Kurzbogen-Kniestreckung 0–30 Grad. Innenseite anspannen.", tag:"Knie", tc:"#16a34a", timer:false },
-        { name:"Terminal Knee Extension (Band)", dose:"3x15 Wdh je Seite", note:"Band hinter Knie, komplett durchstrecken, 2 Sek halten.", tag:"Knie", tc:"#16a34a", timer:false },
-        { name:"Quad-Stretch stehend", dose:"3x45 Sek je Seite", note:"Ferse Richtung Gesaess, Knie zusammen, Huefte vor.", tag:"Knie", tc:"#16a34a", timer:true, sec:45 }
+  {
+    id:'morning', title:'Morgen-Aktivierung',
+    time:'Vor dem Frühstück oder Training',
+    desc:'Aktiviert Knie, Schienbein und Ellenbogen-Sehne. Bereitet Gelenke auf Belastung vor.',
+    total:'~18 Min',
+    cats:[
+      {label:'Knie – Aktivierung', exs:[
+        {name:'VMO-Aktivierung', dose:'3 × 15 Wdh', note:'Kurzbogen-Kniestreckung 0–30°. Innenseite anspannen.', tag:'Knie', tc:'#0C5478', tb:'#EAF3F7', timer:false},
+        {name:'Terminal Knee Extension (Band)', dose:'3 × 15 Wdh je Seite', note:'Band hinter Knie, komplett durchstrecken, 2 Sek halten.', tag:'Knie', tc:'#0C5478', tb:'#EAF3F7', timer:false},
+        {name:'Quad-Stretch stehend', dose:'3 × 45 Sek je Seite', note:'Ferse Richtung Gesäß, Knie zusammen, Hüfte vor.', tag:'Knie', tc:'#0C5478', tb:'#EAF3F7', timer:true, sec:45},
       ]},
-      { label:"SCHIENBEIN – AUFBAU", exercises:[
-        { name:"Tibialis Raises", dose:"3x20 Wdh", note:"Ruecken an Wand, Fersen 30cm weg, Zehen heben.", tag:"Schienbein", tc:"#0891b2", timer:false },
-        { name:"Waden-Exzentrik einbeinig", dose:"3x12 Wdh je Bein", note:"Beidbeinig hoch, einbeinig LANGSAM 4 Sek runter.", tag:"Schienbein", tc:"#0891b2", timer:false },
-        { name:"Fuss-Alphabet", dose:"1x A bis Z je Fuss", note:"Zehe als Stift, Sprunggelenk-Mobilitaet.", tag:"Schienbein", tc:"#0891b2", timer:false }
+      {label:'Schienbein – Aufbau', exs:[
+        {name:'Tibialis Raises', dose:'3 × 20 Wdh', note:'Rücken an Wand, Fersen 30cm weg, Zehen heben.', tag:'Schienbein', tc:'#2D6A11', tb:'#EEF7F0', timer:false},
+        {name:'Waden-Exzentrik einbeinig', dose:'3 × 12 Wdh je Bein', note:'Beidbeinig hoch, einbeinig LANGSAM 4 Sek runter.', tag:'Schienbein', tc:'#2D6A11', tb:'#EEF7F0', timer:false},
+        {name:'Fuß-Alphabet', dose:'1 × A–Z je Fuß', note:'Zehe als Stift, Sprunggelenk-Mobilität.', tag:'Schienbein', tc:'#2D6A11', tb:'#EEF7F0', timer:false},
       ]},
-      { label:"GOLFER-ELLENBOGEN – SEHNE", exercises:[
-        { name:"Exzentrischer Handgelenk-Curl", dose:"3x10 Wdh", note:"1–2 kg, beihaendig hoch, einhaendig 4 Sek runter.", tag:"Ellenbogen", tc:"#d97706", timer:false },
-        { name:"Unterarm-Beuger-Stretch", dose:"3x30 Sek je Seite", note:"Arm gestreckt, Handflaeche oben, Finger nach unten.", tag:"Ellenbogen", tc:"#d97706", timer:true, sec:30 },
-        { name:"Band Supination/Pronation", dose:"3x15 je Richtung", note:"Unterarm drehen gegen Widerstandsband.", tag:"Ellenbogen", tc:"#d97706", timer:false }
-      ]}
+      {label:'Ellenbogen – Sehne', exs:[
+        {name:'Exzentrischer Handgelenk-Curl', dose:'3 × 10 Wdh', note:'1–2 kg, beidhändig hoch, einhändig 4 Sek runter.', tag:'Ellenbogen', tc:'#7A4520', tb:'#F7F0EA', timer:false},
+        {name:'Unterarm-Beuger-Stretch', dose:'3 × 30 Sek je Seite', note:'Arm gestreckt, Handfläche oben, Finger nach unten.', tag:'Ellenbogen', tc:'#7A4520', tb:'#F7F0EA', timer:true, sec:30},
+        {name:'Band Supination/Pronation', dose:'3 × 15 je Richtung', note:'Unterarm gegen Widerstandsband drehen.', tag:'Ellenbogen', tc:'#7A4520', tb:'#F7F0EA', timer:false},
+      ]},
     ]
   },
-  { id:"evening", tab:"Abends", title:"Abend-Regeneration", color:"#818cf8",
-    time:"Abends, mind. 2h nach dem Training", desc:"Dehnt und regeneriert. Umbau passiert im Schlaf.", totalMin:"~22 Min",
-    categories:[
-      { label:"KNIE – DEHNUNG", exercises:[
-        { name:"Liegender Quad-Stretch (Couch Stretch)", dose:"3x60 Sek je Seite", note:"Knie an Wand, anderes Bein vorne, Huefte vor.", tag:"Knie", tc:"#16a34a", timer:true, sec:60 },
-        { name:"Pigeon Pose (Huefte + IT-Band)", dose:"2x60 Sek je Seite", note:"Huefte oeffnen, IT-Band-Spannung reduzieren.", tag:"Knie", tc:"#16a34a", timer:true, sec:60 },
-        { name:"Foam Roll Oberschenkel", dose:"2x60 Sek je Bein", note:"Quads + IT-Band, Pausen auf Schmerzpunkten.", tag:"Knie", tc:"#16a34a", timer:true, sec:60 }
+  {
+    id:'evening', title:'Abend-Regeneration',
+    time:'Mind. 2 Stunden nach dem Training',
+    desc:'Dehnt, regeneriert und baut Sehnen um. Die eigentliche Heilung passiert im Schlaf.',
+    total:'~22 Min',
+    cats:[
+      {label:'Knie – Dehnung', exs:[
+        {name:'Couch Stretch', dose:'3 × 60 Sek je Seite', note:'Knie an Wand, anderes Bein vorne, Hüfte nach vorne.', tag:'Knie', tc:'#0C5478', tb:'#EAF3F7', timer:true, sec:60},
+        {name:'Pigeon Pose', dose:'2 × 60 Sek je Seite', note:'Hüfte öffnen, IT-Band-Spannung reduzieren.', tag:'Knie', tc:'#0C5478', tb:'#EAF3F7', timer:true, sec:60},
+        {name:'Foam Roll Oberschenkel', dose:'2 × 60 Sek je Bein', note:'Quads + IT-Band, Pausen auf Schmerzpunkten.', tag:'Knie', tc:'#0C5478', tb:'#EAF3F7', timer:true, sec:60},
       ]},
-      { label:"SCHIENBEIN – ENTSPANNUNG", exercises:[
-        { name:"Waden-Stretch an der Wand", dose:"3x45 Sek je Seite", note:"Hinteres Bein gestreckt, Ferse am Boden.", tag:"Schienbein", tc:"#0891b2", timer:true, sec:45 },
-        { name:"Soleus-Stretch (gebeugtes Knie)", dose:"2x40 Sek je Seite", note:"Wie Waden-Stretch aber hinteres Knie beugen.", tag:"Schienbein", tc:"#0891b2", timer:true, sec:40 },
-        { name:"Schienbeinkante massieren", dose:"2x60 Sek je Bein", note:"Daumen neben Kante, laengs streichen.", tag:"Schienbein", tc:"#0891b2", timer:true, sec:60 }
+      {label:'Schienbein – Entspannung', exs:[
+        {name:'Waden-Stretch an der Wand', dose:'3 × 45 Sek je Seite', note:'Hinteres Bein gestreckt, Ferse am Boden.', tag:'Schienbein', tc:'#2D6A11', tb:'#EEF7F0', timer:true, sec:45},
+        {name:'Soleus-Stretch (gebeugtes Knie)', dose:'2 × 40 Sek je Seite', note:'Wie Waden-Stretch aber hinteres Knie beugen.', tag:'Schienbein', tc:'#2D6A11', tb:'#EEF7F0', timer:true, sec:40},
+        {name:'Schienbeinkante massieren', dose:'2 × 60 Sek je Bein', note:'Daumen neben Kante, längs streichen.', tag:'Schienbein', tc:'#2D6A11', tb:'#EEF7F0', timer:true, sec:60},
       ]},
-      { label:"ELLENBOGEN – UMBAU", exercises:[
-        { name:"Querfriktionsmassage Sehne", dose:"2x60 Sek je Seite", note:"Daumen quer ueber Sehne, leichter Schmerz OK.", tag:"Ellenbogen", tc:"#d97706", timer:true, sec:60 },
-        { name:"Unterarm-Strecker-Stretch", dose:"3x30 Sek je Seite", note:"Handflaeche unten, Finger sanft nach unten.", tag:"Ellenbogen", tc:"#d97706", timer:true, sec:30 },
-        { name:"Handgelenk-Kreise langsam", dose:"2x10 je Richtung", note:"Voller Umfang, fliessend, kein Rucken.", tag:"Ellenbogen", tc:"#d97706", timer:false }
-      ]}
+      {label:'Ellenbogen – Umbau', exs:[
+        {name:'Querfriktionsmassage Sehne', dose:'2 × 60 Sek je Seite', note:'Daumen quer über Sehne, leichter Schmerz OK.', tag:'Ellenbogen', tc:'#7A4520', tb:'#F7F0EA', timer:true, sec:60},
+        {name:'Unterarm-Strecker-Stretch', dose:'3 × 30 Sek je Seite', note:'Handfläche unten, Finger sanft nach unten.', tag:'Ellenbogen', tc:'#7A4520', tb:'#F7F0EA', timer:true, sec:30},
+        {name:'Handgelenk-Kreise langsam', dose:'2 × 10 je Richtung', note:'Voller Umfang, fließend, kein Rucken.', tag:'Ellenbogen', tc:'#7A4520', tb:'#F7F0EA', timer:false},
+      ]},
     ]
   }
 ];
 
-const SK = "physio_v2";
-let state = { completed:{}, history:[] };
-let asi = 0, timers = {};
+const DETAILS = {
+  'VMO-Aktivierung':{steps:['<b>Sitze</b> auf dem Boden, Bein gestreckt vor dir.','<b>Spanne</b> den Oberschenkel an, hebe Ferse leicht ab – nur 0–30°.','<b>Drücke</b> die Knieinnenseite aktiv, 2 Sek halten.','<b>Senke</b> langsam ab, kein Schwung.'],tip:'Fühle den Muskel direkt über der Kniescheibe innen.',yt:'VMO activation exercise physiotherapy',svg:'knee'},
+  'Terminal Knee Extension (Band)':{steps:['<b>Befestige</b> das Band auf Kniehöhe an einem festen Punkt.','<b>Tritt</b> einen Schritt zurück, Band hinter dem Knie.','<b>Beuge</b> das Knie leicht, dann komplett <b>durchstrecken</b>.','<b>Halte</b> 2 Sek, senke kontrolliert ab.'],tip:'Das Band zieht das Knie nach hinten – du arbeitest dagegen. Kein Hohlkreuz.',yt:'terminal knee extension resistance band',svg:'knee'},
+  'Quad-Stretch stehend':{steps:['<b>Steh</b> auf einem Bein, Wand als Stütze.','<b>Greife</b> den Fuß, Ferse Richtung Gesäß.','<b>Knie</b> bleiben parallel nach unten.','<b>Hüfte</b> leicht nach vorne schieben für Intensität.'],tip:'45 Sek pro Seite. Stuhl als Stütze wenn nötig.',yt:'quadriceps stretch standing technique',svg:'quad'},
+  'Tibialis Raises':{steps:['<b>Lehne</b> an der Wand, Fersen 30cm weg.','<b>Hebe</b> beide Fußspitzen so hoch wie möglich.','<b>Halte</b> kurz, <b>senke</b> langsam 2–3 Sek ab.','Volle Bewegung, Füße nicht fallen lassen.'],tip:'Das Brennen direkt an der Schienbeinkante ist korrekt – das ist der Tibialis anterior.',yt:'tibialis anterior raises shin splints',svg:'shin'},
+  'Waden-Exzentrik einbeinig':{steps:['<b>Stelle</b> Zehenspitzen auf Treppenstufe, Ferse hängt frei.','<b>Hebe</b> dich beidbeinig auf Zehenspitzen.','<b>Hebe</b> das gesunde Bein ab.','<b>Senke</b> die Ferse LANGSAM in 4 Sek ab – tief unter Stufenniveau.'],tip:'Nur die Absenkphase zählt. Aufwärts darf beidbeinig sein.',yt:'eccentric calf raise shin splints',svg:'calf'},
+  'Fuß-Alphabet':{steps:['<b>Setze</b> dich hin, Fuß locker in der Luft.','<b>Stelle dir vor</b>, deine Zehe ist ein Stift.','<b>Schreibe</b> A bis Z in die Luft.','Nur den Fuß bewegen, nicht das ganze Bein.'],tip:'Aktiviert alle kleinen Stabilisatoren im Sprunggelenk.',yt:'ankle alphabet mobility exercise',svg:'ankle'},
+  'Exzentrischer Handgelenk-Curl':{steps:['<b>Sitze</b>, Unterarm auf dem Oberschenkel.','<b>Nimm</b> 1–2 kg, Handfläche nach oben.','<b>Hebe</b> beidhändig nach oben.','<b>Senke</b> einhändig LANGSAM in 4 Sek ab.'],tip:'Niemals in starken Schmerz. Leichtes Ziehen = OK. Stechend = Stopp.',yt:'eccentric wrist curl golfers elbow rehab',svg:'elbow'},
+  'Unterarm-Beuger-Stretch':{steps:['<b>Strecke</b> den Arm, Handfläche nach oben.','<b>Greife</b> mit anderer Hand die Finger.','<b>Ziehe</b> sanft nach unten – Dehnung am Unterarm unten.','<b>Halte</b> 30 Sek, nicht rucken.'],tip:'Dehnung am medialen Epicondylus (Innenknöchel Ellenbogen) spürbar.',yt:'forearm flexor stretch golfers elbow',svg:'elbow'},
+  'Band Supination/Pronation':{steps:['<b>Halte</b> Band in einer Hand, Ellenbogen 90° gebeugt.','<b>Drehe</b> Unterarm nach außen (Handfläche oben).','<b>Drehe</b> zurück gegen Widerstand (Handfläche unten).','Ellenbogen bleibt am Körper.'],tip:'Langsam und kontrolliert. Kein Schwung.',yt:'forearm supination pronation resistance band',svg:'elbow'},
+  'Couch Stretch':{steps:['<b>Knie</b> direkt an die Wand, Unterschenkel liegt hoch.','<b>Anderes Bein</b> nach vorne auf den Boden.','<b>Aufrecht</b> bleiben, Hüfte nach vorne drücken.','<b>Tief atmen</b>, 60 Sek entspannen.'],tip:'Intensivste Quad-Dehnung. Schmerz in der Hüfte = korrekt. Knieschmerz = Position ändern.',yt:'couch stretch quad hip flexor',svg:'quad'},
+  'Pigeon Pose':{steps:['<b>Aus dem Vierfüßlerstand</b> ein Knie nach vorne, Unterschenkel quer ablegen.','<b>Anderes Bein</b> nach hinten strecken, Hüfte sinkt.','<b>Auf Unterarme</b> kommen oder Oberkörper ablegen.','<b>60 Sek</b> tief atmen, Hüfte entspannen.'],tip:'Entlastet Knie durch Hüftöffnung. Je tiefer, desto mehr IT-Band-Spannung löst sich.',yt:'pigeon pose IT band knee pain',svg:'hip'},
+  'Foam Roll Oberschenkel':{steps:['<b>Rolle</b> unter den Oberschenkel, Unterarme stützen.','<b>Rolle</b> langsam von Knie bis Hüfte.','<b>Schmerzpunkte</b>: 10 Sek pausieren, dann weiter.','<b>Dann</b> Seite: IT-Band ausrollen.'],tip:'Langsam mit Pausen ist dreimal effektiver als schnelles Rollen.',yt:'foam roll quad IT band',svg:'quad'},
+  'Waden-Stretch an der Wand':{steps:['<b>Hände</b> an Wand, Schulterhöhe.','<b>Tritt</b> ein Bein nach hinten, Ferse am Boden.','<b>Beuge</b> vorderes Knie, leicht nach vorne lehnen.','<b>45 Sek</b> halten.'],tip:'Ferse muss den Boden berühren. Schritt kleiner machen wenn nicht möglich.',yt:'calf stretch wall gastrocnemius',svg:'calf'},
+  'Soleus-Stretch (gebeugtes Knie)':{steps:['<b>Wie</b> Waden-Stretch an der Wand.','<b>Hinteres Knie</b> leicht beugen.','<b>Ferse</b> bleibt am Boden.','<b>40 Sek</b> halten, tiefer in der Wade spüren.'],tip:'Soleus liegt unter dem Gastrocnemius – nur mit gebeugtem Knie erreichbar.',yt:'soleus stretch bent knee',svg:'calf'},
+  'Schienbeinkante massieren':{steps:['<b>Sitze</b> bequem, Bein entspannt.','<b>Daumen</b> neben (nicht auf) der Schienbeinkante.','<b>Streiche</b> langsam längs von oben nach unten.','<b>Kreise</b> auf Spannungspunkten 5–10 Sek.'],tip:'Nicht auf den Knochen drücken – neben dem Knochen ist der Muskel.',yt:'shin splints self massage tibialis',svg:'shin'},
+  'Querfriktionsmassage Sehne':{steps:['<b>Finde</b> den medialen Epicondylus – Innenknöchel des Ellenbogens.','<b>Taste</b> die Sehne direkt darunter.','<b>Reibe</b> Daumen quer (nicht längs!) über die Sehne.','<b>60 Sek</b>, leichter Schmerz ist gewollt.'],tip:'Querfriktionsmassage bricht Sehnennarben auf. Danach kann es 24h ziehen.',yt:'golfers elbow cross friction massage',svg:'elbow'},
+  'Unterarm-Strecker-Stretch':{steps:['<b>Strecke</b> Arm aus, Handfläche nach unten.','<b>Greife</b> mit anderer Hand die Finger von oben.','<b>Ziehe</b> sanft nach unten.','<b>30 Sek</b>, Dehnung am Unterarm oben.'],tip:'Ergänzt den Beuger-Stretch. Beide Seiten müssen gedehnt werden.',yt:'forearm extensor stretch golfer elbow',svg:'elbow'},
+  'Handgelenk-Kreise langsam':{steps:['<b>Arm</b> locker nach vorne strecken.','<b>Drehe</b> langsam einen großen Kreis.','<b>10 Kreise</b> im Uhrzeigersinn, 10 dagegen.','Fließend, kein Rucken.'],tip:'Fördert Gelenkschmiere und löst Verklebungen.',yt:'wrist circles mobility',svg:'elbow'},
+};
 
-function load() { try { const s=localStorage.getItem(SK); if(s) state=JSON.parse(s); } catch(e){} }
-function save() { try { localStorage.setItem(SK,JSON.stringify(state)); } catch(e){} }
+const SVGS = {
+  knee:`<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><ellipse cx="90" cy="50" rx="26" ry="40" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1"/><ellipse cx="90" cy="140" rx="20" ry="36" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1"/><ellipse cx="90" cy="93" rx="17" ry="14" fill="#F0EDE5" stroke="#8A7355" stroke-width="1.5"/><ellipse cx="78" cy="73" rx="9" ry="16" fill="#B8A57A" opacity="0.3" transform="rotate(-12,78,73)"/><text x="90" y="174" text-anchor="middle" fill="#B8A57A" font-size="9" font-family="Inter,sans-serif" letter-spacing="2">KNIE</text></svg>`,
+  quad:`<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><ellipse cx="90" cy="85" rx="30" ry="65" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1"/><ellipse cx="80" cy="72" rx="9" ry="28" fill="#B8A57A" opacity="0.25" transform="rotate(-4,80,72)"/><ellipse cx="94" cy="68" rx="9" ry="32" fill="#B8A57A" opacity="0.2"/><ellipse cx="107" cy="72" rx="7" ry="26" fill="#B8A57A" opacity="0.2" transform="rotate(4,107,72)"/><ellipse cx="90" cy="145" rx="18" ry="12" fill="#F0EDE5" stroke="#8A7355" stroke-width="1.5"/><text x="90" y="174" text-anchor="middle" fill="#B8A57A" font-size="9" font-family="Inter,sans-serif" letter-spacing="2">QUADRIZEPS</text></svg>`,
+  shin:`<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><ellipse cx="90" cy="90" rx="24" ry="68" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1"/><line x1="90" y1="28" x2="90" y2="158" stroke="#B8A57A" stroke-width="2" opacity="0.35"/><ellipse cx="102" cy="88" rx="9" ry="50" fill="#B8A57A" opacity="0.3" transform="rotate(2,102,88)"/><ellipse cx="95" cy="162" rx="18" ry="9" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1"/><text x="90" y="178" text-anchor="middle" fill="#B8A57A" font-size="9" font-family="Inter,sans-serif" letter-spacing="2">SCHIENBEIN</text></svg>`,
+  calf:`<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><ellipse cx="90" cy="90" rx="26" ry="65" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1"/><ellipse cx="84" cy="76" rx="12" ry="30" fill="#B8A57A" opacity="0.28" transform="rotate(-4,84,76)"/><ellipse cx="99" cy="76" rx="10" ry="28" fill="#B8A57A" opacity="0.2" transform="rotate(4,99,76)"/><line x1="90" y1="132" x2="90" y2="152" stroke="#8A7355" stroke-width="3" opacity="0.5"/><ellipse cx="94" cy="161" rx="20" ry="9" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1"/><text x="90" y="178" text-anchor="middle" fill="#B8A57A" font-size="9" font-family="Inter,sans-serif" letter-spacing="2">WADENMUSKEL</text></svg>`,
+  ankle:`<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><ellipse cx="82" cy="148" rx="50" ry="20" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1"/><ellipse cx="82" cy="108" rx="26" ry="22" fill="#F0EDE5" stroke="#8A7355" stroke-width="1.5"/><path d="M 50 95 A 38 38 0 1 1 114 95" stroke="#B8A57A" stroke-width="2" fill="none"/><polygon points="50,95 44,88 56,86" fill="#B8A57A"/><text x="90" y="178" text-anchor="middle" fill="#B8A57A" font-size="9" font-family="Inter,sans-serif" letter-spacing="2">SPRUNGGELENK</text></svg>`,
+  elbow:`<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><ellipse cx="72" cy="58" rx="18" ry="44" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1" transform="rotate(-8,72,58)"/><ellipse cx="97" cy="98" rx="20" ry="16" fill="#F0EDE5" stroke="#8A7355" stroke-width="1.5"/><circle cx="84" cy="104" r="7" fill="#B8A57A" opacity="0.5"/><circle cx="84" cy="104" r="3.5" fill="#8A7355" opacity="0.7"/><ellipse cx="120" cy="142" rx="16" ry="38" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1" transform="rotate(14,120,142)"/><text x="90" y="178" text-anchor="middle" fill="#B8A57A" font-size="9" font-family="Inter,sans-serif" letter-spacing="2">ELLENBOGEN</text></svg>`,
+  hip:`<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"><ellipse cx="90" cy="72" rx="52" ry="36" fill="#EDE8DC" stroke="#B8A57A" stroke-width="1"/><circle cx="62" cy="82" r="14" fill="#F0EDE5" stroke="#8A7355" stroke-width="1.5"/><circle cx="118" cy="82" r="14" fill="#F0EDE5" stroke="#8A7355" stroke-width="1.5"/><line x1="62" y1="96" x2="56" y2="165" stroke="#B8A57A" stroke-width="2.5" opacity="0.35"/><line x1="118" y1="96" x2="124" y2="165" stroke="#B8A57A" stroke-width="2.5" opacity="0.35"/><text x="90" y="178" text-anchor="middle" fill="#B8A57A" font-size="9" font-family="Inter,sans-serif" letter-spacing="2">HÜFTE</text></svg>`,
+};
 
-function todayKey(sid,ci,ei) { return new Date().toISOString().split('T')[0]+"_"+sid+"_"+ci+"_"+ei; }
+const SK='physio_luxury_v1';
+let S={completed:{},history:[]};
+let timers={};
 
-function countDone(s) {
+function today(){return new Date().toISOString().split('T')[0];}
+function load(){try{const s=localStorage.getItem(SK);if(s)S=JSON.parse(s);}catch(e){}}
+function save(){try{localStorage.setItem(SK,JSON.stringify(S));}catch(e){}}
+function sk(sid,ci,ei){return today()+'_'+sid+'_'+ci+'_'+ei;}
+
+function countDone(sid){
+  const sess=SESSIONS.find(s=>s.id===sid);
   let t=0,d=0;
-  s.categories.forEach((c,ci)=>c.exercises.forEach((_,ei)=>{ t++; if(state.completed[todayKey(s.id,ci,ei)]) d++; }));
-  return {t,d};
+  sess.cats.forEach((c,ci)=>c.exs.forEach((_,ei)=>{t++;if(S.completed[sk(sid,ci,ei)])d++;}));
+  return{t,d};
 }
 
-function startTimer(id, sec) {
-  if(timers[id]) { clearInterval(timers[id]); delete timers[id]; updBtn(id,sec,false); return; }
+function updateProg(){
+  const m=countDone('morning'),e=countDone('evening');
+  const t=m.t+e.t,d=m.d+e.d;
+  const pct=t>0?Math.round(d/t*100):0;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progLabel').textContent=d+' / '+t;
+  if(d===t&&t>0&&!S.history.includes(today())){S.history.push(today());save();}
+}
+
+function startTimer(id,sec){
+  if(timers[id]){clearInterval(timers[id]);delete timers[id];updTimer(id,sec,false);return;}
   let r=sec;
   timers[id]=setInterval(()=>{
-    r--; updBtn(id,r,true);
-    if(r<=0){ clearInterval(timers[id]); delete timers[id]; updBtn(id,0,false); if(navigator.vibrate) navigator.vibrate([200,100,200]); }
+    r--;updTimer(id,r,true);
+    if(r<=0){clearInterval(timers[id]);delete timers[id];updTimer(id,0,false);if(navigator.vibrate)navigator.vibrate([200,100,200]);}
   },1000);
-  updBtn(id,sec,true);
+  updTimer(id,sec,true);
 }
-function updBtn(id,r,run) {
-  const b=document.getElementById("tb_"+id); if(!b) return;
+function updTimer(id,r,run){
+  const b=document.getElementById('tb_'+id);if(!b)return;
   const m=Math.floor(r/60),s=r%60;
-  b.className="timer-btn"+(run?" running":"");
-  b.textContent=run? "⏸ "+m+":"+String(s).padStart(2,"0") : "▶ Timer";
+  b.className='timer-btn'+(run?' running':'');
+  b.textContent=run?'⏸ '+m+':'+String(s).padStart(2,'0'):'▶ Timer';
 }
 
-function openModal(name) {
-  const d=DETAILS[name]; if(!d) return;
-  // find exercise info
-  let dose="", tag="", tc="#888";
-  SESSIONS.forEach(s=>s.categories.forEach(c=>c.exercises.forEach(e=>{ if(e.name===name){dose=e.dose;tag=e.tag;tc=e.tc;} })));
-  document.getElementById("modalTag").style.color=tc;
-  document.getElementById("modalTag").textContent=tag;
-  document.getElementById("modalTitle").textContent=name;
-  document.getElementById("modalDose").textContent=dose;
-  document.getElementById("modalIllustration").innerHTML=SVGS[d.svg]||"";
-  document.getElementById("modalSteps").innerHTML=d.steps.map((st,i)=>`<div class="step"><div class="step-num" style="background:${tc}">${i+1}</div><div class="step-text">${st}</div></div>`).join("");
-  document.getElementById("modalTip").textContent=d.tip;
-  document.getElementById("modalYT").href="https://www.youtube.com/results?search_query="+encodeURIComponent(d.yt);
-  document.getElementById("modalOverlay").classList.add("open");
-  document.body.style.overflow="hidden";
-}
-function closeModal() { document.getElementById("modalOverlay").classList.remove("open"); document.body.style.overflow=""; }
-function closeModalOutside(e) { if(e.target===document.getElementById("modalOverlay")) closeModal(); }
-
-function renderTabs() {
-  document.getElementById("sessionTabs").innerHTML=SESSIONS.map((s,i)=>`
-    <button class="session-tab ${i===asi?"active":""}" style="${i===asi?`background:${s.color}22;border-color:${s.color}44;color:${s.color}`:""}" onclick="switchSession(${i})">${i===0?"🌅":"🌙"} ${s.tab}</button>
-  `).join("");
-}
-
-function renderSession() {
-  const s=SESSIONS[asi];
-  const {t,d}=countDone(s);
-  const pct=t>0?Math.round(d/t*100):0;
-  document.getElementById("sessionTime").innerHTML=`<span class="session-dot" style="background:${s.color}"></span><span style="color:${s.color}">${s.time}</span>`;
-  document.getElementById("sessionTitle").textContent=s.title;
-  document.getElementById("sessionDesc").textContent=s.desc;
-  document.getElementById("sessionTotal").textContent="⏱ "+s.totalMin+" · "+d+"/"+t+" erledigt";
-  document.getElementById("progressFill").style.cssText=`width:${pct}%;background:${s.color}`;
-  document.getElementById("progressText").textContent=pct===100?"✅ Session komplett!":pct+"% abgeschlossen";
-
-  document.getElementById("exerciseContainer").innerHTML=s.categories.map((cat,ci)=>`
-    <div class="category">
-      <div class="category-label">${cat.label}</div>
-      ${cat.exercises.map((ex,ei)=>{
-        const k=todayKey(s.id,ci,ei), done=!!state.completed[k], tid=s.id+"_"+ci+"_"+ei;
-        return `<div class="ex-card ${done?"done":""}" onclick="toggleEx('${s.id}',${ci},${ei})">
-          <div class="checkbox ${done?"checked":""}">${done?"✓":""}</div>
-          <div class="ex-body">
-            <div class="ex-top">
-              <span class="ex-name ${done?"done":""}">${ex.name}</span>
-              <span class="ex-tag" style="background:${ex.tc}22;color:${ex.tc};border-color:${ex.tc}44">${ex.tag}</span>
-            </div>
-            <div class="ex-dose" style="color:${s.color}">${ex.dose}</div>
-            <div class="ex-note">${ex.note}</div>
-            <div class="ex-actions" onclick="event.stopPropagation()">
-              ${ex.timer?`<button class="timer-btn" id="tb_${tid}" onclick="startTimer('${tid}',${ex.sec})">▶ Timer</button>`:""}
-              <button class="how-btn" onclick="openModal('${ex.name.replace(/'/g,"\\'")}')">👁 Wie geht das?</button>
+function renderSession(sid){
+  const sess=SESSIONS.find(s=>s.id===sid);
+  const{t,d}=countDone(sid);
+  const el=document.getElementById('content-'+sid);
+  el.innerHTML=`
+    <div class="session-intro">
+      <div class="session-time">${sess.time}</div>
+      <div class="session-title">${sess.title}</div>
+      <div class="session-desc">${sess.desc}</div>
+      <div class="session-total">⏱ ${sess.total} · ${d} / ${t} erledigt</div>
+    </div>
+    ${sess.cats.map((cat,ci)=>`
+      <div class="cat-label">${cat.label}</div>
+      ${cat.exs.map((ex,ei)=>{
+        const done=!!S.completed[sk(sid,ci,ei)];
+        const tid=sid+'_'+ci+'_'+ei;
+        return `<div class="ex${done?' done':''}" onclick="toggleEx('${sid}',${ci},${ei})">
+          <div class="ring"><div class="tick"></div></div>
+          <div class="exbody">
+            <div class="exname">${ex.name}</div>
+            <div class="exdose">${ex.dose}</div>
+            <div class="exnote">${ex.note}</div>
+            <span class="extag" style="background:${ex.tb};color:${ex.tc}">${ex.tag}</span>
+            <div class="exactions" onclick="event.stopPropagation()">
+              ${ex.timer?`<button class="timer-btn" id="tb_${tid}" onclick="startTimer('${tid}',${ex.sec})">▶ Timer</button>`:''}
+              <button class="how-btn" onclick="openModal('${ex.name.replace(/'/g,"\\'")}','${ex.dose}','${ex.tag}','${ex.tc}')">Wie geht das?</button>
             </div>
           </div>
         </div>`;
-      }).join("")}
-    </div>
-  `).join("");
+      }).join('')}
+    `).join('')}
+  `;
+  updateProg();
 }
 
-function toggleEx(sid,ci,ei) {
-  const k=todayKey(sid,ci,ei); state.completed[k]=!state.completed[k];
-  const today=new Date().toISOString().split('T')[0];
-  const m=countDone(SESSIONS[0]),e=countDone(SESSIONS[1]);
-  if((m.d===m.t||e.d===e.t)&&!state.history.includes(today)) state.history.push(today);
-  save(); renderSession();
+function toggleEx(sid,ci,ei){
+  const k=sk(sid,ci,ei);S.completed[k]=!S.completed[k];
+  save();renderSession(sid);
 }
 
-function switchSession(i) {
+function openModal(name,dose,tag,tc){
+  const d=DETAILS[name];if(!d)return;
+  document.getElementById('mTag').style.color=tc;
+  document.getElementById('mTag').textContent=tag;
+  document.getElementById('mTitle').textContent=name;
+  document.getElementById('mDose').textContent=dose;
+  document.getElementById('mIllus').innerHTML=SVGS[d.svg]||'';
+  document.getElementById('mSteps').innerHTML=d.steps.map((s,i)=>`
+    <div class="step">
+      <div class="step-num">${i+1}</div>
+      <div class="step-text">${s}</div>
+    </div>`).join('');
+  document.getElementById('mTip').textContent=d.tip;
+  document.getElementById('mYT').href='https://www.youtube.com/results?search_query='+encodeURIComponent(d.yt);
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
+function closeModalOut(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
+
+function renderInfo(){
+  const hist=S.history||[];
+  let streak=0;const d=new Date();
+  for(let i=0;i<365;i++){
+    const ds=d.toISOString().split('T')[0];
+    if(hist.includes(ds)){streak++;d.setDate(d.getDate()-1);}
+    else if(i===0){d.setDate(d.getDate()-1);}
+    else break;
+  }
+  document.getElementById('streakNum').textContent=streak;
+  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const now=new Date();const dow=(now.getDay()+6)%7;
+  document.getElementById('weekRow').innerHTML=days.map((day,i)=>{
+    const d2=new Date(now);d2.setDate(now.getDate()-dow+i);
+    const ds=d2.toISOString().split('T')[0];
+    const done=hist.includes(ds);const isToday=i===dow;
+    return `<div class="wc"><div class="wd${done?' done':isToday?' today':''}">${done?'✓':day[0]}</div><div class="wl">${day}</div></div>`;
+  }).join('');
+}
+
+function go(tab){
   Object.keys(timers).forEach(id=>{clearInterval(timers[id]);delete timers[id];});
-  asi=i; renderTabs(); renderSession();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  document.querySelector(`.tab[onclick="go('${tab}')"]`).classList.add('active');
+  document.getElementById('nb-'+tab).classList.add('active');
+  document.getElementById('mainHeader').style.display=tab==='info'?'none':'';
+  if(tab==='info')renderInfo();
+  if(tab==='morning'||tab==='evening')renderSession(tab);
 }
 
-function showPage(page) {
-  document.getElementById("mainPage").classList.toggle("hidden",page!=="main");
-  document.getElementById("infoPage").classList.toggle("hidden",page!=="info");
-  document.getElementById("navMain").classList.toggle("active",page==="main");
-  document.getElementById("navInfo").classList.toggle("active",page==="info");
-  document.getElementById("header").style.display=page==="main"?"":"none";
-  if(page==="info") renderInfo();
-}
-
-function renderInfo() {
-  const hist=state.history||[]; let streak=0; const d=new Date();
-  for(let i=0;i<30;i++){const ds=d.toISOString().split('T')[0];if(hist.includes(ds)){streak++;d.setDate(d.getDate()-1);}else if(i===0){d.setDate(d.getDate()-1);}else break;}
-  document.getElementById("streakNum").textContent=streak;
-  const days=["Mo","Di","Mi","Do","Fr","Sa","So"]; const now=new Date(); const dow=(now.getDay()+6)%7;
-  document.getElementById("weekDots").innerHTML=days.map((day,i)=>{
-    const d2=new Date(now); d2.setDate(now.getDate()-dow+i);
-    const ds=d2.toISOString().split('T')[0]; const done=hist.includes(ds); const today=i===dow;
-    return `<div class="week-dot-item"><div class="week-dot-circle ${done?"complete":today?"today":""}">${done?"✓":day[0]}</div><div class="week-dot-label">${day}</div></div>`;
-  }).join("");
-}
-
-load(); renderTabs(); renderSession();
-if(new Date().getHours()>=17) switchSession(1);
+load();
+renderSession('morning');
+renderSession('evening');
+updateProg();
+if(new Date().getHours()>=17)go('evening');
 </script>
 </body>
 </html>
